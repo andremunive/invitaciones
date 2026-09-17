@@ -13,13 +13,13 @@ El proyecto es de uso personal / familiar; no requiere multi-tenant ni escala p�
 
 ## 2. Stack
 
-- **Frontend**: Angular 18 (standalone components, SSR habilitado con `@angular/ssr`). Ver [package.json](package.json). Estilos con **Tailwind CSS v3** — configurado en [tailwind.config.js](tailwind.config.js) y directivas en [src/styles.scss](src/styles.scss).
+- **Frontend**: Angular 18 (standalone components, **SPA cliente-only** — SSR desactivado). Ver [package.json](package.json). Estilos con **Tailwind CSS v3** — configurado en [tailwind.config.js](tailwind.config.js) y directivas en [src/styles.scss](src/styles.scss).
 - **Backend / Datos**: [Supabase](https://supabase.com/) (PostgreSQL + API REST/JS SDK). Toda la persistencia (invitados, respuestas) vive en Supabase.
   - Proyecto: **`invitaciones-ruby`** — ref `dzwhdqzpfmekjblynfba`, org `xfwljjjwexwmhepeevbj`, región `us-east-1`.
   - URL API: `https://dzwhdqzpfmekjblynfba.supabase.co`.
   - Cuenta: `juam98tores@gmail.com` (accedida vía MCP). La `anon key` / `publishable key` se cargará en `src/environments/environment.ts` cuando conectemos el cliente.
 - **Autenticación del panel**: usuario y clave **hardcodeados en el código** (no se usa Supabase Auth). Es aceptable porque solo lo usará el dueño del evento; se protege vía [authGuard](src/app/core/auth/auth.guard.ts) sobre las rutas `/admin/*`. Credenciales actuales en [environment.ts](src/environments/environment.ts): `admin` / `ruby2026`. Sesión persistida en `sessionStorage` (se cierra al cerrar la pestaña).
-- **Hosting**: por definir (probablemente estático + SSR opcional; el flujo funciona 100% en cliente si se prefiere SPA puro).
+- **Hosting**: **Netlify** como SPA estática. Config en [netlify.toml](netlify.toml) (Node 20, `npm run build`, publish `dist/invitaciones`, redirect `/* → /index.html 200` para deep links). Deploy vía GitHub → Netlify (autobuild en cada push).
 
 ## 3. Funcionalidades
 
@@ -70,7 +70,7 @@ Tabla `public.guests` en Supabase (migración `create_guests_table` ya aplicada)
 ## 6. Estado actual del código
 
 - [x] Scaffold Angular 18 + Tailwind v3 configurado.
-- [x] Login del panel (`/admin/login`) con credenciales hardcodeadas en `environment.ts`, sesión en `sessionStorage`, SSR-safe. Componentes: [LoginComponent](src/app/admin/login/login.component.ts), [AuthService](src/app/core/auth/auth.service.ts), [authGuard](src/app/core/auth/auth.guard.ts).
+- [x] Login del panel (`/admin/login`) con credenciales hardcodeadas en `environment.ts`, sesión en `sessionStorage`. Componentes: [LoginComponent](src/app/admin/login/login.component.ts), [AuthService](src/app/core/auth/auth.service.ts), [authGuard](src/app/core/auth/auth.guard.ts).
 - [x] Placeholder de [DashboardComponent](src/app/admin/dashboard/dashboard.component.ts) con botón "Salir".
 - [x] Rutas en [app.routes.ts](src/app/app.routes.ts): `/` → `/admin` (guard) → login si no autenticado.
 - [x] Tabla `guests` creada en Supabase con RLS abierto para `anon`.
@@ -90,7 +90,7 @@ Actualizar esta sección a medida que se cierren decisiones.
 <!-- cliente Supabase resuelto: @supabase/supabase-js instalado, publishable key en environment.ts -->
 <!-- RLS resuelto: anon abierto (SELECT/INSERT/UPDATE/DELETE sin filtro) -->
 - [ ] **Cómo confirma cupos el invitado**: hoy `seats` es lo asignado por el admin. ¿El invitado puede confirmar un número menor al asignado (necesitaríamos un campo `confirmed_seats`)?
-- [ ] **Hosting**: Vercel / Netlify / GitHub Pages / Supabase Storage — impacta si mantenemos SSR o pasamos a SPA.
+<!-- hosting resuelto: Netlify SPA vía GitHub → ver netlify.toml -->
 - [ ] **Diseño de la invitación**: plantilla (colores, tipografías, foto, música/animaciones si aplica).
 - [ ] **i18n**: el contenido es en español (Colombia). No se contempla multi-idioma.
 
@@ -101,7 +101,6 @@ npm start              # ng serve → http://localhost:4200
 npm run build          # build de producción
 npm run watch          # build development en watch
 npm test               # tests unitarios (Karma + Jasmine)
-npm run serve:ssr:invitaciones   # servir build SSR ya compilado
 ```
 
 ## 9. Convenciones
