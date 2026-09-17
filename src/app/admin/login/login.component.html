@@ -1,0 +1,52 @@
+<main class="flex min-h-screen items-center justify-center px-4 py-10">
+  <section
+    class="w-full max-w-sm rounded-2xl bg-white p-6 shadow-lg ring-1 ring-slate-200 sm:p-8"
+  >
+    <header class="mb-6 text-center">
+      <h1 class="text-2xl font-semibold text-slate-900">Panel de invitaciones</h1>
+      <p class="mt-1 text-sm text-slate-500">Ingresa para gestionar los invitados de Ruby.</p>
+    </header>
+
+    <form [formGroup]="form" (ngSubmit)="submit()" class="space-y-4" novalidate>
+      <div>
+        <label for="username" class="mb-1 block text-sm font-medium text-slate-700">
+          Usuario
+        </label>
+        <input
+          id="username"
+          type="text"
+          autocomplete="username"
+          formControlName="username"
+          class="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-base text-slate-900 outline-none transition focus:border-pink-500 focus:ring-2 focus:ring-pink-200"
+        />
+      </div>
+
+      <div>
+        <label for="password" class="mb-1 block text-sm font-medium text-slate-700">
+          Contraseña
+        </label>
+        <input
+          id="password"
+          type="password"
+          autocomplete="current-password"
+          formControlName="password"
+          class="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-base text-slate-900 outline-none transition focus:border-pink-500 focus:ring-2 focus:ring-pink-200"
+        />
+      </div>
+
+      @if (error()) {
+        <p class="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700" role="alert">
+          {{ error() }}
+        </p>
+      }
+
+      <button
+        type="submit"
+        [disabled]="submitting()"
+        class="w-full rounded-lg bg-pink-600 px-4 py-3 text-base font-semibold text-white shadow-sm transition hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-pink-300 disabled:cursor-not-allowed disabled:opacity-60"
+      >
+        {{ submitting() ? 'Entrando…' : 'Entrar' }}
+      </button>
+    </form>
+  </section>
+</main>

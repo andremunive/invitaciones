@@ -1,0 +1,18 @@
+:host {
+  display: block;
+  min-height: 100dvh;
+  background: #efe7da;
+  font-family: 'Outfit', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.card-shell {
+  width: 100%;
+  max-width: 390px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.pulse { animation: pulse 2.6s ease-in-out infinite; }
+.rise-a { animation: rise 0.6s ease both; }
+.rise-b { animation: rise 0.7s ease 0.1s both; }
