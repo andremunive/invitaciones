@@ -16,3 +16,26 @@
 .pulse { animation: pulse 2.6s ease-in-out infinite; }
 .rise-a { animation: rise 0.6s ease both; }
 .rise-b { animation: rise 0.7s ease 0.1s both; }
+.sheet-rise { animation: sheetRise 0.22s cubic-bezier(.2,.8,.2,1) both; }
+
+@media (max-height: 740px) {
+  .hero { padding: 14px 24px 12px !important; }
+  .hero-hola { font-size: 10px !important; }
+  .hero-photo {
+    width: 96px !important;
+    height: 96px !important;
+    margin-top: 10px !important;
+    border-width: 3px !important;
+  }
+  .hero-name { font-size: 34px !important; margin-top: 8px !important; }
+  .hero-cumple { margin-top: 4px !important; font-size: 11px !important; }
+  .hero-seats { margin-top: 4px !important; font-size: 10px !important; }
+  .info-wrap { padding: 10px 20px 14px !important; gap: 8px !important; }
+  .info-card { padding: 18px 22px !important; }
+}
+
+@media (max-height: 620px) {
+  .hero-photo { width: 78px !important; height: 78px !important; margin-top: 6px !important; }
+  .hero-name { font-size: 28px !important; margin-top: 6px !important; }
+  .info-card { padding: 14px 20px !important; }
+}

@@ -18,6 +18,20 @@ const RSVP_META: Record<RsvpStatus, RsvpMeta> = {
   declined: { label: 'No asiste', badgeClass: 'bg-rose-100 text-rose-800' },
 };
 
+type StatusFilter = 'all' | RsvpStatus;
+
+interface FilterOption {
+  value: StatusFilter;
+  label: string;
+}
+
+const FILTER_OPTIONS: readonly FilterOption[] = [
+  { value: 'all', label: 'Todos' },
+  { value: 'pending', label: 'Pendientes' },
+  { value: 'confirmed', label: 'Confirmados' },
+  { value: 'declined', label: 'No asisten' },
+];
+
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
@@ -37,12 +51,30 @@ export class DashboardComponent {
   readonly saving = signal(false);
   readonly error = signal<string | null>(null);
   readonly copiedToken = signal<string | null>(null);
+  readonly statusFilter = signal<StatusFilter>('all');
+
+  readonly filterOptions = FILTER_OPTIONS;
 
   readonly totalSeats = computed(() =>
     this.guests()
       .filter((g) => g.rsvp_status === 'confirmed')
       .reduce((sum, g) => sum + g.seats, 0),
   );
+
+  readonly statusCounts = computed(() => {
+    const counts: Record<StatusFilter, number> = { all: 0, pending: 0, confirmed: 0, declined: 0 };
+    for (const g of this.guests()) {
+      counts.all++;
+      counts[g.rsvp_status]++;
+    }
+    return counts;
+  });
+
+  readonly filteredGuests = computed(() => {
+    const filter = this.statusFilter();
+    const list = this.guests();
+    return filter === 'all' ? list : list.filter((g) => g.rsvp_status === filter);
+  });
 
   readonly form = this.fb.nonNullable.group({
     name: ['', [Validators.required, Validators.maxLength(80)]],
@@ -116,12 +148,19 @@ export class DashboardComponent {
   shareWhatsApp(guest: Guest): void {
     if (!this.isBrowser) return;
     const url = this.invitationUrl(guest.token);
-    const text = `Hola ${guest.name}, te comparto tu invitación al cumpleaños de Ruby: ${url}`;
+    const text =
+      `Se acerca mi cumpleaños número 27 🥳💕 y quiero celebrarlo contigo.\n\n` +
+      `Te dejo por aquí la invitación con todos los detalles. Espero que puedas acompañarme y pasar un rato chévere juntos. 🥂✨\n\n` +
+      `Porfa, confírmame tu asistencia. 💌\n\n${url}`;
     window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
   }
 
   rsvpMeta(status: RsvpStatus): RsvpMeta {
     return RSVP_META[status];
+  }
+
+  setStatusFilter(value: StatusFilter): void {
+    this.statusFilter.set(value);
   }
 
   logout(): void {

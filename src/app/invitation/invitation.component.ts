@@ -26,12 +26,16 @@ export class InvitationComponent {
   readonly envelopeOpen = signal(false);
   readonly responding = signal(false);
   readonly respondError = signal<string | null>(null);
+  readonly mapPickerOpen = signal(false);
 
   readonly seatsLabel = computed(() => {
     const g = this.guest();
     if (!g) return '';
     return g.seats === 1 ? '1 cupo' : `${g.seats} cupos`;
   });
+
+  readonly googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${this.event.venueLat},${this.event.venueLng}`;
+  readonly wazeUrl = `https://waze.com/ul?ll=${this.event.venueLat},${this.event.venueLng}&navigate=yes`;
 
   constructor() {
     if (this.isBrowser) void this.load();
@@ -62,6 +66,14 @@ export class InvitationComponent {
     if (g && !g.invitation_opened) {
       void this.guestsService.markOpened(g.token).catch(() => undefined);
     }
+  }
+
+  openMapPicker(): void {
+    this.mapPickerOpen.set(true);
+  }
+
+  closeMapPicker(): void {
+    this.mapPickerOpen.set(false);
   }
 
   async respond(status: 'confirmed' | 'declined'): Promise<void> {

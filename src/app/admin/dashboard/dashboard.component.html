@@ -62,9 +62,32 @@
     <section>
       <div class="mb-3 flex items-center justify-between gap-3">
         <h2 class="text-lg font-semibold text-slate-900">
-          Invitados <span class="text-slate-400">({{ guests().length }})</span>
+          Invitados <span class="text-slate-400">({{ filteredGuests().length }})</span>
         </h2>
         <span class="text-sm text-slate-500">Cupos confirmados: <strong class="text-slate-900">{{ totalSeats() }}</strong></span>
+      </div>
+
+      <div class="mb-3 -mx-4 overflow-x-auto px-4 sm:mx-0 sm:px-0">
+        <div class="flex gap-2" role="tablist" aria-label="Filtrar por estado">
+          @for (opt of filterOptions; track opt.value) {
+            <button
+              type="button"
+              role="tab"
+              [attr.aria-selected]="statusFilter() === opt.value"
+              (click)="setStatusFilter(opt.value)"
+              class="shrink-0 rounded-full border px-3 py-1.5 text-sm font-medium transition"
+              [class]="statusFilter() === opt.value
+                ? 'border-pink-600 bg-pink-600 text-white shadow-sm'
+                : 'border-slate-300 bg-white text-slate-700 hover:bg-slate-100'"
+            >
+              {{ opt.label }}
+              <span
+                class="ml-1 rounded-full px-1.5 py-0.5 text-xs font-semibold"
+                [class]="statusFilter() === opt.value ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600'"
+              >{{ statusCounts()[opt.value] }}</span>
+            </button>
+          }
+        </div>
       </div>
 
       @if (loading()) {
@@ -75,9 +98,13 @@
         <p class="rounded-2xl border border-dashed border-slate-300 bg-white px-4 py-10 text-center text-sm text-slate-500">
           Aún no hay invitados registrados.
         </p>
+      } @else if (filteredGuests().length === 0) {
+        <p class="rounded-2xl border border-dashed border-slate-300 bg-white px-4 py-10 text-center text-sm text-slate-500">
+          No hay invitados en este estado.
+        </p>
       } @else {
         <ul class="space-y-3">
-          @for (guest of guests(); track guest.id) {
+          @for (guest of filteredGuests(); track guest.id) {
             <li class="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-slate-200 sm:p-5">
               <div class="flex flex-wrap items-start justify-between gap-2">
                 <div class="min-w-0">

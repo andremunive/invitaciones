@@ -68,6 +68,7 @@
             style="position:absolute; inset:0; background:#FDF3E3; display:flex; flex-direction:column"
           >
             <div
+              class="hero"
               style="position:relative; flex-shrink:0; padding:28px 24px 20px; background:radial-gradient(130% 100% at 50% 0%, #14574D, #0B3B36); overflow:hidden"
             >
               <div
@@ -90,21 +91,25 @@
                 style="position:relative; display:flex; flex-direction:column; align-items:center"
               >
                 <div
+                  class="hero-hola"
                   style="font-size:11px; letter-spacing:.34em; text-transform:uppercase; color:#FFB23F; text-align:center"
                 >
                   Hola, {{ g.name }}
                 </div>
+                <img
+                  class="hero-photo"
+                  src="/rubiela.png"
+                  alt="Ruby"
+                  style="margin-top:16px; width:130px; height:130px; border-radius:50%; object-fit:cover; border:4px solid #FDF3E3; box-shadow:0 18px 30px -14px rgba(0,0,0,.5); flex-shrink:0"
+                />
                 <div
-                  style="margin-top:16px; width:130px; height:130px; border-radius:50%; overflow:hidden; border:4px solid #FDF3E3; box-shadow:0 18px 30px -14px rgba(0,0,0,.5); background:radial-gradient(circle at 30% 30%, #FF8C6E, #C33F22); display:flex; align-items:center; justify-content:center; font-family:'DM Serif Display',serif; font-size:74px; color:#FFF6EE; flex-shrink:0"
-                >
-                  R
-                </div>
-                <div
+                  class="hero-name"
                   style="margin-top:14px; font-family:'DM Serif Display',serif; font-size:44px; line-height:1; color:#FDF3E3"
                 >
                   {{ event.hostName }}
                 </div>
                 <div
+                  class="hero-cumple"
                   style="margin-top:6px; display:flex; align-items:center; gap:10px; color:#FFB23F; font-size:12px; letter-spacing:.24em; text-transform:uppercase"
                 >
                   <span style="width:26px; height:1px; background:#FFB23F; opacity:.6"></span>
@@ -112,6 +117,7 @@
                   <span style="width:26px; height:1px; background:#FFB23F; opacity:.6"></span>
                 </div>
                 <div
+                  class="hero-seats"
                   style="margin-top:8px; font-size:11px; color:#FFB23F; opacity:.85; letter-spacing:.06em"
                 >
                   Te reservamos {{ seatsLabel() }}
@@ -120,17 +126,13 @@
             </div>
 
             <div
+              class="info-wrap"
               style="flex:1; min-height:0; padding:16px 20px 18px; display:flex; flex-direction:column; gap:12px"
             >
               <div
-                class="rise-b"
+                class="rise-b info-card"
                 style="flex:1; min-height:0; background:#FFFDF7; border-radius:22px; padding:26px 24px; box-shadow:0 18px 40px -26px rgba(11,59,54,.5); overflow:hidden; display:flex; flex-direction:column; justify-content:center"
               >
-                <p
-                  style="margin:0 0 22px; font-family:'DM Serif Display',serif; font-style:italic; font-size:19px; line-height:1.45; color:#0B3B36; text-align:center; text-wrap:pretty"
-                >
-                  {{ event.message }}
-                </p>
                 <div
                   style="display:grid; grid-template-columns:76px 1fr; gap:12px 16px; font-size:14px; color:#0B3B36"
                 >
@@ -161,6 +163,12 @@
                     >Código</span
                   >
                   <span style="font-weight:500">{{ event.dressCode }}</span>
+
+                  <span
+                    style="color:#87A39D; font-size:11px; letter-spacing:.16em; text-transform:uppercase; padding-top:3px"
+                    >Regalo</span
+                  >
+                  <span style="font-weight:500">{{ event.gift }}</span>
                 </div>
               </div>
 
@@ -202,13 +210,13 @@
                   </div>
                 }
 
-                <a
-                  [href]="event.locationUrl"
-                  target="_blank"
-                  rel="noopener"
-                  style="height:44px; border-radius:14px; border:1.5px solid #CBB99A; color:#0B3B36; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:500; text-decoration:none"
-                  >Abrir en Google Maps</a
+                <button
+                  type="button"
+                  (click)="openMapPicker()"
+                  style="height:44px; border-radius:14px; border:1.5px solid #CBB99A; background:transparent; color:#0B3B36; display:flex; align-items:center; justify-content:center; font-family:'Outfit',sans-serif; font-size:14px; font-weight:500; cursor:pointer"
                 >
+                  Cómo llegar
+                </button>
 
                 @if (respondError()) {
                   <p
@@ -219,6 +227,73 @@
                   </p>
                 }
               </div>
+            </div>
+          </div>
+        }
+
+        @if (mapPickerOpen()) {
+          <div
+            (click)="closeMapPicker()"
+            role="presentation"
+            style="position:absolute; inset:0; background:rgba(11,59,54,.55); display:flex; align-items:flex-end; justify-content:center; z-index:20; animation:fadeIn .18s ease-out"
+          >
+            <div
+              (click)="$event.stopPropagation()"
+              role="dialog"
+              aria-labelledby="mapPickerTitle"
+              class="sheet-rise"
+              style="width:100%; background:#FDF3E3; border-radius:22px 22px 0 0; padding:14px 20px 22px; display:flex; flex-direction:column; gap:10px; box-shadow:0 -18px 40px -18px rgba(0,0,0,.4)"
+            >
+              <div
+                style="width:40px; height:4px; background:#CBB99A; border-radius:2px; align-self:center; margin-bottom:4px"
+              ></div>
+              <h2
+                id="mapPickerTitle"
+                style="margin:0; font-family:'DM Serif Display',serif; font-size:20px; color:#0B3B36; text-align:center"
+              >
+                Cómo llegar
+              </h2>
+              <p style="margin:0 0 4px; font-size:12px; color:#5A7A73; text-align:center">
+                Abrir la ubicación con
+              </p>
+
+              <a
+                [href]="googleMapsUrl"
+                target="_blank"
+                rel="noopener"
+                (click)="closeMapPicker()"
+                style="display:flex; align-items:center; gap:12px; padding:12px 14px; border-radius:14px; background:#FFFDF7; border:1.5px solid #CBB99A; color:#0B3B36; text-decoration:none; font-size:15px; font-weight:500"
+              >
+                <span
+                  style="width:36px; height:36px; border-radius:10px; background:#34A853; color:#FFFFFF; display:flex; align-items:center; justify-content:center; font-family:'DM Serif Display',serif; font-size:20px; flex-shrink:0"
+                  aria-hidden="true"
+                  >G</span
+                >
+                Google Maps
+              </a>
+
+              <a
+                [href]="wazeUrl"
+                target="_blank"
+                rel="noopener"
+                (click)="closeMapPicker()"
+                style="display:flex; align-items:center; gap:12px; padding:12px 14px; border-radius:14px; background:#FFFDF7; border:1.5px solid #CBB99A; color:#0B3B36; text-decoration:none; font-size:15px; font-weight:500"
+              >
+                <span
+                  style="width:36px; height:36px; border-radius:10px; background:#33CCFF; color:#FFFFFF; display:flex; align-items:center; justify-content:center; font-family:'DM Serif Display',serif; font-size:20px; flex-shrink:0"
+                  aria-hidden="true"
+                  >W</span
+                >
+                Waze
+              </a>
+
+              <button
+                type="button"
+                (click)="closeMapPicker()"
+                style="margin-top:4px; height:42px; border:0; border-radius:14px; background:transparent; color:#5A7A73; font-family:'Outfit',sans-serif; font-size:14px; cursor:pointer"
+              >
+                Cancelar
+              </button>
             </div>
           </div>
         }

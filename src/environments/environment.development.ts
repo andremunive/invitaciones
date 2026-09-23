@@ -13,11 +13,11 @@ export const environment = {
     hostAge: 27,
     date: 'Sábado 3 de octubre',
     time: '8:00 PM',
-    venueName: 'Casa de los Mangos',
-    venueAddress: 'Calle 12 #45-30',
+    venueName: 'Casa Campo Jerónimo',
+    venueAddress: 'Vía a la Mesa (KM7)',
     dressCode: 'Sin Niños',
-    message:
-      'Cumplo 27 y quiero celebrarlo contigo. Trae ropa fresca, buena energía y ganas de bailar hasta tarde.',
-    locationUrl: 'https://maps.google.com/?q=Cumpleanos+Ruby',
+    gift: 'Lluvia de sobres 💵',
+    venueLat: 10.4395637,
+    venueLng: -73.3372392,
   },
 };
