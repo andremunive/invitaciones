@@ -64,8 +64,8 @@ export class DashboardComponent {
   readonly statusCounts = computed(() => {
     const counts: Record<StatusFilter, number> = { all: 0, pending: 0, confirmed: 0, declined: 0 };
     for (const g of this.guests()) {
-      counts.all++;
-      counts[g.rsvp_status]++;
+      counts.all += g.seats;
+      counts[g.rsvp_status] += g.seats;
     }
     return counts;
   });
@@ -75,6 +75,10 @@ export class DashboardComponent {
     const list = this.guests();
     return filter === 'all' ? list : list.filter((g) => g.rsvp_status === filter);
   });
+
+  readonly filteredSeats = computed(() =>
+    this.filteredGuests().reduce((sum, g) => sum + g.seats, 0),
+  );
 
   readonly form = this.fb.nonNullable.group({
     name: ['', [Validators.required, Validators.maxLength(80)]],
